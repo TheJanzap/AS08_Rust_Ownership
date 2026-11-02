@@ -201,7 +201,7 @@ mod tests {
 
         let e2 = abs("x", var("x"));
         let r2 = pretty_print(&eval(&e2));
-        //assert_eq!(r2, "λx. x");
+        assert_eq!(r2, "λx. x");
 
         let e3 = app(abs("x", var("x")), var("y"));
         let r3 = pretty_print(&eval(&e3));
@@ -209,7 +209,7 @@ mod tests {
 
         let e4 = app(abs("x", abs("y", var("x"))), var("z"));
         let r4 = pretty_print(&eval(&e4));
-        //assert_eq!(r4, "λy. z");
+        assert_eq!(r4, "λy. z");
 
         let e5 = app(app(abs("x", abs("y", var("x"))), var("a")), var("b"));
         let r5 = pretty_print(&eval(&e5));
