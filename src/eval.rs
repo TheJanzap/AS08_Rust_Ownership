@@ -4,13 +4,13 @@ use std::collections::HashSet;
 /// Evaluates a term:
 /// In order to simplify the term as much as possible, we use a call-by-value strategy.
 /// We even evaluate the body of an abstraction eagerly.
-/// 
+///
 /// The evaluation rules are as follows:
 /// - A variable evaluates to itself.
 /// - An abstraction evaluates to itself, even the body is eagerly evaluated.
-/// - An application evaluates the left side, then the right side, 
+/// - An application evaluates the left side, then the right side,
 ///   and applies the left side to the right side by substitution.
-///   Examples: 
+///   Examples:
 ///   `x` evaluates to `x`.
 ///   `λx. x` evaluates to `λx. x`.
 ///   `(λx. x) y` evaluates to `y`.
@@ -20,8 +20,6 @@ pub fn eval(term: &Term) -> Term {
     term.clone()
     // TODO: "Implement the eval function")
 }
-
-
 
 /// Replace all occurrences of a variable `var` in a `term` with `replacement`.
 pub fn substitute(term: &Term, var: &str, replacement: &Term) -> Term {
