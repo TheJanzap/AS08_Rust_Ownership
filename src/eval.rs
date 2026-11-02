@@ -17,8 +17,24 @@ use std::collections::HashSet;
 ///   `(λx. (λy. x)) z` evaluates to `λy. z`.
 ///   `(λx. (λy. x)) a b` evaluates to `a`.
 pub fn eval(term: &Term) -> Term {
-    term.clone()
     // TODO: "Implement the eval function")
+    match term {
+        Term::Var(_) => term.clone(),
+        // Perform eager evaluation
+        Term::Abs(name, term) => abs(name, eval(term)),
+        Term::App(l, r) => {
+            // Evaluate both sides first
+            let l = eval(l);
+            let r = eval(r);
+
+            // Perform substitution if term is an abstraction
+            match l {
+                Term::Abs(name, term) => substitute(&term, &name, &r),
+                // Otherwise retrun a regular application
+                _ => app(l, r),
+            }
+        }
+    }
 }
 
 /// Replace all occurrences of a variable `var` in a `term` with `replacement`.
@@ -106,6 +122,7 @@ fn collect_all_vars(term: &Term) -> HashSet<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::pretty::pretty_print;
 
     #[test]
     fn test_free_variables() {
@@ -174,5 +191,28 @@ mod tests {
         let evaluated = eval(&term);
         let expected = var("z");
         assert_eq!(evaluated, expected);
+    }
+
+    #[test]
+    fn exercise_examples() {
+        let e1 = var("x");
+        let r1 = pretty_print(&eval(&e1));
+        assert_eq!(r1, "x");
+
+        let e2 = abs("x", var("x"));
+        let r2 = pretty_print(&eval(&e2));
+        //assert_eq!(r2, "λx. x");
+
+        let e3 = app(abs("x", var("x")), var("y"));
+        let r3 = pretty_print(&eval(&e3));
+        assert_eq!(r3, "y");
+
+        let e4 = app(abs("x", abs("y", var("x"))), var("z"));
+        let r4 = pretty_print(&eval(&e4));
+        //assert_eq!(r4, "λy. z");
+
+        let e5 = app(app(abs("x", abs("y", var("x"))), var("a")), var("b"));
+        let r5 = pretty_print(&eval(&e5));
+        assert_eq!(r5, "a")
     }
 }
