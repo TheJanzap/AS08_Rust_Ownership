@@ -20,7 +20,7 @@ pub fn eval(term: &Term) -> Term {
     // TODO: "Implement the eval function")
     match term {
         Term::Var(_) => term.clone(),
-        // Perform eager evaluation
+        // Perform strong reduction/normalization
         Term::Abs(name, term) => abs(name, eval(term)),
         Term::App(l, r) => {
             // Evaluate both sides first
